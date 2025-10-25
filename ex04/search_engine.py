@@ -6,6 +6,9 @@ inside the `search_loop` function.
 import sys
 import os
 
+from BST import BST
+
+
 def get_char() -> str:
     """
     Read one character from stdin without pressing Enter.
