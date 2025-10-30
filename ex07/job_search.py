@@ -24,6 +24,7 @@ def find_jobs(language: str, location_wanted: str) -> None:
     soup = BeautifulSoup(response.content, 'html.parser')
 
     jobs = soup.find_all('li', attrs={'class': 'job'})
+    cnt = 0
     for job in jobs:
 
         location_elem = job.find('div', attrs={'class': 'job_header_title'})
@@ -32,7 +33,7 @@ def find_jobs(language: str, location_wanted: str) -> None:
         location = parts[0].strip()
         post_date = parts[1].strip()
 
-        if remove_diacritics(location.lower()) == remove_diacritics(location_wanted.lower()):
+        if location_wanted is None or remove_diacritics(location.lower()) == remove_diacritics(location_wanted.lower()):
 
             job_elem = job.find('div', attrs={'class': 'job_header_title'})
             title_element = job_elem.find('h3')
@@ -62,9 +63,20 @@ def find_jobs(language: str, location_wanted: str) -> None:
                 index += 1
 
             print('\n')
+            cnt += 1
+            if cnt == 7:
+                break
 
 
 if __name__ == '__main__':
-   language = sys.argv[1]
-   location_wanted =sys.argv[2]
+   if len(sys.argv) < 2:
+       print("Usage: python job_search.py <language> <location_wanted>")
+       exit(1)
+   if len(sys.argv) == 2:
+        language = sys.argv[1]
+        location_wanted = None
+   elif len(sys.argv) == 3:
+       language = sys.argv[1]
+       location_wanted = sys.argv[2]
+
    find_jobs(language, location_wanted)
